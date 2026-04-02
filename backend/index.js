@@ -17,8 +17,14 @@ app.use((req, res, next) => {
 });
 
 app.get("/meals", async (req, res) => {
-  const meals = "[]" // data should be read from file
-  res.json(JSON.parse(meals));
+  try {
+    const filePath = path.join(__dirname, "data", "meals.json");
+    const data = await fs.readFile(filePath, "utf-8");
+    res.json(JSON.parse(data));
+  } catch (error) {
+    console.error("Error meals failis:", error);
+    res.status(500).json({ message: "ERROR" });
+  }
 });
 
 app.use((req, res) => {
@@ -29,4 +35,4 @@ app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });
 
-app.listen(3001);
+app.listen(3001, () => console.log( `Server is running on port 3000`));
