@@ -1,28 +1,27 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
+import ReactDOM from "react-dom";
 
 const Modal = (props) => {
-     const dialogRef = useRef()
- 
-    useEffect(() => {
-      if (props.isOpen) {
-        dialogRef.current?.showModal()
-      } else {
-        dialogRef.current?.close()
-      }
-  
-      return () => {
-        dialogRef.current?.close()
-      }
-    }, [props.isOpen])
-  
-    return (
-      <dialog ref={dialogRef} className="modal">
-        <div className="modal-actions">
+  if (!props.isOpen) return null;
+
+  return ReactDOM.createPortal(
+    <div className="modal-backdrop" onClick={props.onClose}>
+      <dialog className="modal" open onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content">
           {props.children}
         </div>
+        <div className="modal-actions">
+          <button onClick={props.onClose} className="text-button">
+            Close
+          </button>
+          <button onClick={props.onCheckout} className="button">
+            Checkout
+          </button>
+        </div>
       </dialog>
-        
-    )
-}
+    </div>,
+    document.getElementById("modal")
+  );
+};
 
-export default Modal
+export default Modal;

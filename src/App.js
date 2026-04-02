@@ -26,6 +26,10 @@ const cartReducer = (state, action) => {
     return { items: updatedItems }
   }
 
+  if (action.type === "CLEAR_CART") {
+    return { items: [] }
+  }
+
   return state
 }
 
@@ -46,19 +50,28 @@ const openModalHandler = () => {
   }
 
   const checkoutHandler = () => {
-    console.log("Checkout clicked!")
+    dispatchCartAction({ type: "CLEAR_CART" })
     setModalOpen(false)
   }
 
   const totalItems = cartState.items.reduce((total, item) => total + item.quantity, 0)
+  const totalPrice = cartState.items.reduce((total, item) => total + (item.price * item.quantity), 0)
  return (
     <>
      <CartContext.Provider value={{ items: cartState.items, addItem: addItemToCartHandler }}>
      <Header onOpenCart={openModalHandler} totalItems={totalItems} />
     <main>
     <Meals />
-    <Modal isOpen={modalOpen} onClose={closeModalHandler}>
-           <h2>Test</h2>
+    <Modal isOpen={modalOpen} onClose={closeModalHandler} onCheckout={checkoutHandler}>
+           <h2>Your Cart</h2>
+           <ul className="cart">
+             {cartState.items.map((item) => (
+               <li key={item.id}>
+                 {item.name} - {item.quantity}
+               </li>
+             ))}
+           </ul>
+           <p className="cart-total">{totalPrice.toFixed(2).replace('.', ',')} €</p>
          </Modal>
     </main>
     </CartContext.Provider>
