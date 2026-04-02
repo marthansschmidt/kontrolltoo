@@ -1,43 +1,26 @@
-import { useContext, useEffect } from 'react'
-import logo from '../assets/logo.jpg'
-import Button from './UI/Button.js'
-import CartContext from '../store/CartContext.js'
+import { useContext } from "react"
+import logo from "../assets/logo.jpg"
+import Button from "./UI/Button"
+import CartContext from "../store/CartContext"
 
 const Header = () => {
-    
-    const cartCtx = useContext(CartContext)
- 
-    useEffect(() => {
-      const itemQuantities = cartCtx.items.reduce((acc, item) => {
-        acc[item.id] = (acc[item.id] || 0) + 1
-        return acc
-      }, {})
-  
-      const cartItemsWithQuantity = Object.values(
-        cartCtx.items.reduce((acc, item) => {
-          if (!acc[item.id]) {
-            acc[item.id] = { ...item, quantity: itemQuantities[item.id] }
-          }
-          return acc
-        }, {})
-      );
-  
-      console.log('Cart items:', cartItemsWithQuantity)
-    }, [cartCtx.items])
-  
-    const totalItems = cartCtx.items.length
+   const cartCtx = useContext(CartContext)
 
-    return (
-<header id="main-header">
-        <div id="title">
-          <img src={logo} alt="React Food Order App Logo" />
-          <h1>React Food Order App</h1>
-        </div>
-        <nav>
-          <Button textOnly>Cart ({totalItems})</Button>
-        </nav>
-      </header>
-    );
-  };
+  const totalItems = cartCtx.items.reduce((total, item) => total + item.quantity, 0)
+
+  console.log("Cart items:", cartCtx.items)
+
+  return (
+    <header id="main-header">
+      <div id="title">
+        <img src={logo} alt="Food Order Logo" />
+        <h1>React Food Order App</h1>
+      </div>
+      <nav>
+        <Button textOnly>Cart ({totalItems})</Button>
+      </nav>
+    </header>
+  )
+}
 
 export default Header
